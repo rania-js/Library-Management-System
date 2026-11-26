@@ -12,6 +12,7 @@
     <Compile Include="SearchBook.fs" />
     <Compile Include="BorrowBook.fs" />
     <Compile Include="ReturnBook.fs" />
+    <Compile Include="DeleteBook.fs" />
     <Compile Include="DisplayBooks.fs" />
     <Compile Include="GUI.fs" />
     <Compile Include="Program.fs" />
