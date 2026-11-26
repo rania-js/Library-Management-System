@@ -1,4 +1,11 @@
-﻿// For more information see https://aka.ms/fsharp-console-apps
+﻿module Program
+
 open System
 open System.Windows.Forms
 
+[<EntryPoint>]
+[<STAThread>]
+let main _ =
+    Application.EnableVisualStyles()
+    Application.Run(GUI.buildForm ())
+    0
