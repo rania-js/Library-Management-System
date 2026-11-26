@@ -1,36 +1,35 @@
 
-module Library.AddBook
+//  Function to add a new book (title, author, genre).
+
+module AddBook
 
 open System
-open Library.Types
+open Types
 
-let addBook (lib: Library) (title: string) (author: string) (genre: string)
-    : Result<Library, LibraryError> =
+let addBook (title: string) (author: string) (genre: string) (library: Library) : Result<Library, string> =
+    let t, a, g = clean title, clean author, clean genre
 
-    if String.IsNullOrWhiteSpace(title)
-       || String.IsNullOrWhiteSpace(author)
-       || String.IsNullOrWhiteSpace(genre) then
+    let missingField =
+        [ "Title", t; "Author", a; "Genre", g ]
+        |> List.tryFind (fun (_, value) -> value = "")
 
-        Error InvalidBookData
+    let sameText (x: string) (y: string) =
+        String.Equals(x, y, StringComparison.OrdinalIgnoreCase)
 
-    else
+    match missingField with
+    | Some(name, _) -> Error(sprintf "%s is required." name)
+    | None ->
+        let isDuplicate =
+            library |> Map.exists (fun _ b -> sameText b.Title t && sameText b.Author a)
 
-        let newId = Library.Types.Library.nextBookId lib
-
-        let newBook = {
-            Id = newId
-            Title = title.Trim()
-            Author = author.Trim()
-            Genre = genre.Trim()
-            Status = Available
-        }
-
-        let updatedBooks = lib.Books.Add(newId, newBook)
-
-        let updatedLibrary = {
-            lib with
-                Books = updatedBooks
-        }
-
-        Ok updatedLibrary
-
+        if isDuplicate then
+            Error "This book already exists in the library."
+        else
+            let id = nextId library
+            let book =
+                { Id = id
+                  Title = t
+                  Author = a
+                  Genre = g
+                  Status = Available }
+            Ok(Map.add id book library)
