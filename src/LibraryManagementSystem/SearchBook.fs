@@ -1,22 +1,32 @@
-﻿module Library.SearchBook
+// ================================================================
+//  SearchBook.fs  -  Person 3
+//  Function to search for books (case-insensitive) by:
+//  title, author, genre, status (Available / Borrowed) or Id.
+// ================================================================
+module SearchBook
 
-open Library.Types
+open System
+open Types
 
-let searchBook (lib: Library) (searchText: string) : Book list =
+let search (query: string) (library: Library) : Book list =
+    let q = clean query
 
-    let allBooks =
-        lib.Books
-        |> Map.toList
-        |> List.map snd
+    let contains (text: string) =
+        text.Contains(q, StringComparison.OrdinalIgnoreCase)
 
-    if System.String.IsNullOrWhiteSpace(searchText) then
-        allBooks
+    let statusText (book: Book) =
+        match book.Status with
+        | Available -> "Available"
+        | Borrowed _ -> "Borrowed"
 
-    else
-        allBooks
-        |> List.filter (fun book ->
-            book.Title.Contains(
-                searchText.Trim(),
-                System.StringComparison.OrdinalIgnoreCase
-            )
-        )
+    let matches (book: Book) =
+        contains book.Title
+        || contains book.Author
+        || contains book.Genre
+        || contains (statusText book)
+        || contains (string book.Id)
+
+    library |> allBooks |> List.filter matches
+
+/// Kept for compatibility with the older name.
+let searchByTitle = search
