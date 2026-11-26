@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Program.fs" />
+
+		  <Compile Include="Book.fs" />
+		  <Compile Include="AddBook.fs" />
+		  <Compile Include="SearchBook.fs" />
+		  <Compile Include="BorrowBook.fs" />
+		  <Compile Include="ReturnBook.fs" />
+		  <Compile Include="DisplayBooks.fs" />
+		  <Compile Include="GUI.fs" />
+		  <Compile Include="Program.fs" />
+	  
   </ItemGroup>
  
 </Project>
